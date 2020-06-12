@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TLMS</string>
+    <string-array name="trade_type">
+        <item>Sole</item>
+        <item>Partnership</item>
+        <item>Corporation</item>
+    </string-array>
+</resources>
