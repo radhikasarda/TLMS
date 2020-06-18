@@ -34,8 +34,8 @@
 
     <TextView
         android:id="@+id/textView16"
-        android:layout_width="159dp"
-        android:layout_height="19dp"
+        android:layout_width="175dp"
+        android:layout_height="37dp"
         android:text="Property Assessment No."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,8 +46,8 @@
 
     <EditText
         android:id="@+id/editTextTextPersonName5"
-        android:layout_width="206dp"
-        android:layout_height="47dp"
+        android:layout_width="182dp"
+        android:layout_height="55dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Invoice"></activity>
+        <activity android:name=".Selection"></activity>
         <activity android:name=".Renewal"></activity>
         <activity android:name=".NewRegistration2"></activity>
         <activity android:name=".NewRegistration"></activity>

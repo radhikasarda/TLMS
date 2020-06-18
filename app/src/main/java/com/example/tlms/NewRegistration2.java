@@ -97,14 +97,24 @@ public class NewRegistration2 extends AppCompatActivity implements ResultListene
             });
             AlertDialog alert = builder.create();
             alert.setTitle("Registration Status");
-
             alert.show();
 
     }
 
     public void launchIntent(){
 
-        Intent intent = new Intent(NewRegistration2.this,LoginActivity.class);
+        Intent intent = new Intent(NewRegistration2.this,Selection.class);
+        intent.putExtra("pan_no",pan_no);
+        intent.putExtra("gst_no",gst_no);
+        intent.putExtra("contact",contact);
+        intent.putExtra("trade_owner_name",trade_owner_name);
+        intent.putExtra("business_holding_name",business_holding_name);
+        intent.putExtra("email",email);
+        intent.putExtra("correspondance_address",correspondance_address);
+        intent.putExtra("property_no",property_no);
+        intent.putExtra("property_type",property_type);
+        intent.putExtra("ward_no",ward_no);
+        intent.putExtra("locality",locality);
         startActivity(intent);
     }
 }
