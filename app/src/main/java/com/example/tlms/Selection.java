@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,7 +195,9 @@ public class Selection extends AppCompatActivity {
             intent.putExtra("ward_no",bundle.getString("ward_no"));
             intent.putExtra("locality",bundle.getString("locality"));
             intent.putExtra("selected_application_type", selected_application_type);
-            intent.putExtra("selected_trade_list", selected_trade_list.toString());
+            //intent.putExtra("selected_trade_list", selected_trade_list.toString());
+            intent.putExtra("selected_trade_list", (Serializable) selected_trade_list);
+            //intent.putExtra("selected_trade_list", (Parcelable) selected_trade_list);
             intent.putExtras(bundle);
             //startActivity(intent);
 

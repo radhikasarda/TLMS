@@ -39,8 +39,6 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
         String type = params[0];
 
-
-
         if (Objects.equals(type, "login")) {
             String login_url = BuildConfig.SERVER_URL+"login_validate.php";
             try {
@@ -114,6 +112,44 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
                         + URLEncoder.encode("locality", "UTF-8") + "=" + URLEncoder.encode(locality, "UTF-8")+"&"
                         + URLEncoder.encode("ward_no", "UTF-8") + "=" + URLEncoder.encode(ward_no, "UTF-8")+"&"
                         +URLEncoder.encode("property_type", "UTF-8") + "=" + URLEncoder.encode(property_type, "UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                String result = "";
+
+                String line = "";
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                return result;
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (Objects.equals(type, "invoice")) {
+            String login_url = BuildConfig.SERVER_URL+"get_tax_rate.php";
+            try {
+                String value = params[1];
+                Log.e("Value in BG",value+"----##############################");
+                URL url = new URL(login_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String post_data = URLEncoder.encode("trade_type", "UTF-8") + "=" + URLEncoder.encode(value, "UTF-8") ;
                 bufferedWriter.write(post_data);
                 bufferedWriter.flush();
                 bufferedWriter.close();
