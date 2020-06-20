@@ -16,6 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class BackgroundWorker extends AsyncTask<String,Void,String> {
@@ -23,9 +26,6 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     ResultListener rListener;
     Context context;
     AlertDialog alertDialog;
-    //AlertDialog alertDialog1
-    //AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-    //AlertDialog alertDialog = alertDialogBuilder.create();
 
 
 
@@ -138,37 +138,41 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         } else if (Objects.equals(type, "invoice")) {
-            String login_url = BuildConfig.SERVER_URL+"get_tax_rate.php";
+            String invoice_url = BuildConfig.SERVER_URL+"get_tax_rate.php";
+            String result = "";
             try {
                 String value = params[1];
                 Log.e("Value in BG",value+"----##############################");
-                URL url = new URL(login_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("trade_type", "UTF-8") + "=" + URLEncoder.encode(value, "UTF-8") ;
-                bufferedWriter.write(post_data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
+                ArrayList<String> selected_trade_types = new ArrayList<String>(Arrays.asList(value.split(",")));
+                for(String selected : selected_trade_types) {
+                    Log.e("inside for each",selected+"###################################");
+                    URL url = new URL(invoice_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    OutputStream outputStream = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    String post_data = URLEncoder.encode("trade_type", "UTF-8") + "=" + URLEncoder.encode(selected.trim(), "UTF-8");
+                    bufferedWriter.write(post_data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    outputStream.close();
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    //result = "";
+                    String line = "";
+                    String seperator = ";";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result += line;
+                        result += seperator;
+                    }
 
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
+                    bufferedReader.close();
+                    inputStream.close();
+                    httpURLConnection.disconnect();
                 }
-
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
                 return result;
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

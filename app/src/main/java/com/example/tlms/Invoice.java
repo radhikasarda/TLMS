@@ -1,15 +1,11 @@
 package com.example.tlms;
 
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 public class Invoice extends AppCompatActivity implements ResultListener{
 
@@ -60,23 +55,31 @@ public class Invoice extends AppCompatActivity implements ResultListener{
         selected_period = bundle.getString("selected_period");
         tv_trade_owner_name.setText(trade_owner_name);
         tv_businesss_holding_name.setText(business_holding_name);
-
         createInvoiceRows(selected_trade_types);
 
-
-
     }
-    public void  createInvoiceRows(ArrayList<String> selected_trade_types)
+
+
+    public  void createInvoiceRows(ArrayList<String> selected_trade_types)
     {
-        for (String value : selected_trade_types)
+
+       /* for (String value : selected_trade_types)
         {
             String type = "invoice";
             BackgroundWorker backgroundWorker = new BackgroundWorker(this, this);
             backgroundWorker.execute(type,value);
 
-        }
-        Log.e("TOTAL TAX",total_tax_rate.toString()+"##########################################");
+        }*/
+        String type = "invoice";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this, this);
+        String formatted_selected_trade_types = selected_trade_types.toString()
+                .replace("[", "") .replace("]", "");  //remove the left bracket
+
+        backgroundWorker.execute(type,formatted_selected_trade_types);
+
+
     }
+
 
     @Override
     public void setResult(String result)
@@ -85,17 +88,52 @@ public class Invoice extends AppCompatActivity implements ResultListener{
 
 
         } else {
+            //result =  result.split(",");
             createTableRow(result);
             //Log.e("TOTAL TAX",total_tax_rate.toString()+"##########################################");
         }
+
+        //tv_total_tax.setText(total_tax_rate.toString());
 
     }
 
     public void createTableRow(String result)
     {
+        BigDecimal total = BigDecimal.ZERO;
+        String[] result_array_list = result.split(";");
+        for(String value : result_array_list)
+        {
+            Log.e("RESULT ARRAY LIST",value+"##########################################################################");
+            total = getTableRowData(value);
+
+        }
+
+
+
+        if(!selected_application_type.equals("new")){
+
+            Calendar cal = Calendar.getInstance();
+            mYear = cal.get(Calendar.YEAR);
+
+            String[] years_period = selected_period.split("-");
+            //Log.e("PERIOD ",years_period[0]+"#############################################");
+            int year_period_int = Integer.valueOf(years_period[0]);
+            int gap = mYear-year_period_int;
+            gap = gap+1;
+            //Log.e("GAP ",gap+"#############################################");
+            total = total.multiply(BigDecimal.valueOf(gap));
+
+        }
+        Log.e("TOTAL",total.toString()+"##########################################");
+        tv_total_tax.setText(total.toString());
+
+    }
+
+    public BigDecimal getTableRowData(String value)
+    {
         try {
 
-            jarray = new JSONArray((result));
+            jarray = new JSONArray((value));
 
 
             for (int i = 0; i < jarray.length(); i++) {
@@ -143,25 +181,10 @@ public class Invoice extends AppCompatActivity implements ResultListener{
 
             }
 
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        tv_total_tax.setText(total_tax_rate.toString());
-        /*if(!selected_application_type.equals("new")){
-
-            Calendar cal = Calendar.getInstance();
-            mYear = cal.get(Calendar.YEAR);
-
-            String[] years_period = selected_period.split("-");
-            //Log.e("PERIOD ",years_period[0]+"#############################################");
-            int year_period_int = Integer.valueOf(years_period[0]);
-            int gap = mYear-year_period_int;
-            gap = gap+1;
-            //Log.e("GAP ",gap+"#############################################");
-            total_tax_rate = total_tax_rate.multiply(BigDecimal.valueOf(gap));
-
-        }*/
-
+        return total_tax_rate;
     }
 
 }
